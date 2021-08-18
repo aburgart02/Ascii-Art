@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
-from settings import d
+from settings import font_size
 
 
 class AsciiPictureGenerator:
@@ -11,7 +11,7 @@ class AsciiPictureGenerator:
     def generate_picture_art(self):
         with open('art.txt', 'r') as f:
             text = f.read()
-        font = ImageFont.truetype(r'fonts\lucida_console.ttf', d[self.scale])
+        font = ImageFont.truetype(r'fonts\lucida_console.ttf', font_size[self.scale])
         canvas = Image.new('RGB', (self.width, self.height), 'white')
         draw = ImageDraw.Draw(canvas)
         draw.text((0, 0), text, 'black', font, spacing=1)

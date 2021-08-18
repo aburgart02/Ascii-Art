@@ -1,10 +1,11 @@
 from PIL import Image
+from settings import granularity_levels
 
 
 class AsciiArtGenerator:
-    def __init__(self, path, scale_level):
+    def __init__(self, path, scale_level, granularity_level):
         self.image = Image.open(path)
-        self.symbols = ['@', '#', 'S', '%', '?', '*', '+', ':', ',', '.', ' ']
+        self.symbols = granularity_levels[granularity_level - 1]
         self.scale = scale_level
         self.resized_image = self.image.resize((self.image.size[0], int(self.image.size[1]
                                                                         * (2 / 3))), resample=0, box=None)
@@ -20,5 +21,5 @@ class AsciiArtGenerator:
                                 average += (self.resized_image.getpixel((width + block_height,
                                                                          height + block_width))[part]
                                             / (3 * self.scale ** 2))
-                    f.write(self.symbols[int(average) // 25])
+                    f.write(self.symbols[int(average) // (255 // (len(self.symbols) - 1))])
                 f.write('\n')

@@ -16,10 +16,12 @@ class ApplicationWindow(QWidget):
         self.palette = QPalette()
         self.generate_button = QPushButton('Обработать', self)
         self.generate_button.clicked.connect(self.generate_art)
-        self.granularity = QSlider(Qt.Horizontal, self)
-        self.granularity_level = QLabel('1', self)
+        self.granularity_level = QSlider(Qt.Horizontal, self)
+        self.granularity_level_value = QLabel('1', self)
+        self.granularity_level_text = QLabel('Выберите уровень детализации:', self)
         self.art_label = QLabel(self)
         self.scale = QLineEdit(self)
+        self.scale_text = QLabel('Выберите масштаб:', self)
         self.path = ''
         self.ascii_art = None
         self.ascii_picture = None
@@ -45,19 +47,22 @@ class ApplicationWindow(QWidget):
             self.configure_art()
 
     def configure_elements(self, x):
-        self.granularity_level.move(1170 * x, 300 * x)
-        self.granularity_level.setStyleSheet('font-weight: 500; color: white; font-size:' + str(int(20 * x)) + 'pt;')
-        self.granularity_level.adjustSize()
+        self.granularity_level_value.move(1120 * x, 300 * x)
+        self.granularity_level_value.setStyleSheet('font-weight: 500; color: white; font-size:' + str(int(20 * x)) + 'pt;')
+        self.granularity_level_value.adjustSize()
+        self.granularity_level_text.move(850 * x, 250 * x)
+        self.granularity_level_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.granularity_level_text.adjustSize()
         self.generate_button.setFixedSize(300 * x, 50 * x)
-        self.generate_button.move(900 * x, 500 * x)
+        self.generate_button.move(850 * x, 500 * x)
         self.generate_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                            'border-radius: 10px; border-color: blue; font: bold ' + str(int(28 * x)) +
                                            'px; min-width: 0em; padding: 6px; color: white;')
-        self.granularity.setFixedSize(220 * x, 50 * x)
-        self.granularity.move(900 * x, 300 * x)
-        self.granularity.setTickPosition(QSlider.TicksBelow)
-        self.granularity.setRange(1, 5)
-        self.granularity.setStyleSheet("""
+        self.granularity_level.setFixedSize(220 * x, 50 * x)
+        self.granularity_level.move(850 * x, 300 * x)
+        self.granularity_level.setTickPosition(QSlider.TicksBelow)
+        self.granularity_level.setRange(1, 5)
+        self.granularity_level.setStyleSheet("""
                     QSlider{
                     }
                     QSlider::groove:horizontal {  
@@ -78,9 +83,12 @@ class ApplicationWindow(QWidget):
                         border-radius: 5px;
                     }
                 """)
-        self.granularity.valueChanged.connect(self.change_granularity_level)
+        self.granularity_level.valueChanged.connect(self.change_granularity_level)
+        self.scale_text.move(850 * x, 50 * x)
+        self.scale_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.scale_text.adjustSize()
         self.scale.setFixedSize(300 * x, 50 * x)
-        self.scale.move(900 * x, 100 * x)
+        self.scale.move(850 * x, 100 * x)
         self.scale.setStyleSheet('background : #570290; font-weight: 500; color: white; font-size:' + str(18 * x)
                                  + 'pt; border: 2px solid blue; border-width : 2px 2px 2px 2px;')
         self.scale.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -91,7 +99,7 @@ class ApplicationWindow(QWidget):
         self.setPalette(self.palette)
 
     def change_granularity_level(self):
-        self.granularity_level.setText(str(self.granularity.value()))
+        self.granularity_level_value.setText(str(self.granularity_level.value()))
 
     def generate_art(self):
         if self.scale.text() == '':
@@ -99,7 +107,7 @@ class ApplicationWindow(QWidget):
         self.path = QFileDialog.getOpenFileName()[0]
         if self.path == '':
             return
-        self.ascii_art = AsciiArtGenerator(self.path, int(self.scale.text()))
+        self.ascii_art = AsciiArtGenerator(self.path, int(self.scale.text()), int(self.granularity_level.value()))
         self.ascii_art.generate_text_art()
         self.ascii_picture = AsciiPictureGenerator(int(self.scale.text()), self.ascii_art.image.size[0],
                                                    self.ascii_art.image.size[1])
