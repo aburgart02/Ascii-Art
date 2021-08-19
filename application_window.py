@@ -22,6 +22,8 @@ class ApplicationWindow(QWidget):
         self.art_label = QLabel(self)
         self.scale = QLineEdit(self)
         self.scale_text = QLabel('Выберите масштаб:', self)
+        self.scale_hint = QLabel('Масштаб должен быть в пределах от 1 до 8', self)
+        self.scale_hint.hide()
         self.path = ''
         self.ascii_art = None
         self.ascii_picture = None
@@ -87,6 +89,9 @@ class ApplicationWindow(QWidget):
         self.scale_text.move(850 * x, 50 * x)
         self.scale_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
         self.scale_text.adjustSize()
+        self.scale_hint.move(850 * x, 170 * x)
+        self.scale_hint.setStyleSheet('font-weight: 500; color: white; font-size:' + str(10 * x) + 'pt;')
+        self.scale_hint.adjustSize()
         self.scale.setFixedSize(300 * x, 50 * x)
         self.scale.move(850 * x, 100 * x)
         self.scale.setStyleSheet('background : #570290; font-weight: 500; color: white; font-size:' + str(18 * x)
@@ -102,8 +107,11 @@ class ApplicationWindow(QWidget):
         self.granularity_level_value.setText(str(self.granularity_level.value()))
 
     def generate_art(self):
-        if self.scale.text() == '':
+        if self.scale.text() == '' or int(self.scale.text()) < 1 or int(self.scale.text()) > 8:
+            self.scale_hint.show()
             return
+        else:
+            self.scale_hint.hide()
         self.path = QFileDialog.getOpenFileName()[0]
         if self.path == '':
             return
