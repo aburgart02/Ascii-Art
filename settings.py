@@ -1,3 +1,10 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QDesktopWidget
+
+
+app = QApplication(sys.argv)
+resolution = QDesktopWidget().availableGeometry()
+resolution_ratio = resolution.width() / 1280
 font_size = {1: 1, 2: 3, 3: 5, 4: 7, 5: 9, 6: 11, 7: 13, 8: 15}
 granularity_levels = [['@', '#', 'S', '%', '?', '*', '+', ':', ',', '.', ' '],
                       ['№', '@', '#', 'S', '%', 'a', '?', 'c', '*', '=', '+', ':', ',', '.', '`', ' '],

@@ -4,6 +4,7 @@ from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import QWidget, QPushButton, QSlider, QLineEdit, QLabel, QFileDialog
 from ascii_art_generator import AsciiArtGenerator
 from ascii_picture_generator import AsciiPictureGenerator
+from settings import resolution_ratio
 
 
 class ApplicationWindow(QWidget):
@@ -43,8 +44,8 @@ class ApplicationWindow(QWidget):
             self.configure_elements(1)
         else:
             self.showFullScreen()
-            self.set_background(1.5)
-            self.configure_elements(1.5)
+            self.set_background(resolution_ratio)
+            self.configure_elements(resolution_ratio)
         if self.art_label.pixmap():
             self.configure_art()
 
@@ -115,7 +116,7 @@ class ApplicationWindow(QWidget):
         self.path = QFileDialog.getOpenFileName()[0]
         if self.path == '':
             return
-        self.ascii_art = AsciiArtGenerator(self.path, int(self.scale.text()), int(self.granularity_level.value()))
+        self.ascii_art = AsciiArtGenerator(self.path, int(self.scale.text()), int(self.granularity_level.value()), self)
         self.ascii_art.generate_text_art()
         self.ascii_picture = AsciiPictureGenerator(int(self.scale.text()), self.ascii_art.image.size[0],
                                                    self.ascii_art.image.size[1])
