@@ -1,3 +1,5 @@
+import math
+import settings
 from PIL import Image
 from settings import granularity_levels
 from progress_bar import ProgressBar
@@ -13,7 +15,7 @@ class AsciiArtGenerator:
         self.progress_bar = ProgressBar(application_window, self.image, self.scale)
 
     def generate_text_art(self):
-        with open('art.txt', 'w') as f:
+        with open(settings.save_path + 'art.txt', 'w') as f:
             for height in range(0, self.resized_image.size[1] - self.scale, self.scale):
                 for width in range(0, self.resized_image.size[0] - self.scale, self.scale):
                     average = 0
@@ -25,6 +27,6 @@ class AsciiArtGenerator:
                                 average += (self.resized_image.getpixel((width + block_height,
                                                                          height + block_width))[part]
                                             / (3 * self.scale ** 2))
-                    f.write(self.symbols[int(average) // (255 // (len(self.symbols) - 1))])
+                    f.write(self.symbols[int(average) // math.ceil(255 / (len(self.symbols)))])
                 f.write('\n')
         self.progress_bar.close()

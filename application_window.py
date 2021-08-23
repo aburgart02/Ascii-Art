@@ -1,6 +1,7 @@
+import settings
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap
+from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QPushButton, QSlider, QLineEdit, QLabel, QFileDialog
 from ascii_art_generator import AsciiArtGenerator
 from ascii_picture_generator import AsciiPictureGenerator
@@ -16,7 +17,7 @@ class ApplicationWindow(QWidget):
         self.background = self.image.scaled(QSize(1280, 720))
         self.palette = QPalette()
         self.generate_button = QPushButton('Обработать', self)
-        self.generate_button.clicked.connect(self.generate_art)
+        self.save_path_button = QPushButton(self)
         self.granularity_level = QSlider(Qt.Horizontal, self)
         self.granularity_level_value = QLabel('1', self)
         self.granularity_level_text = QLabel('Выберите уровень детализации:', self)
@@ -31,6 +32,7 @@ class ApplicationWindow(QWidget):
         self.pixmap = None
         self.set_background(1)
         self.configure_elements(1)
+        self.assign_buttons()
         self.show()
 
     def keyPressEvent(self, e):
@@ -51,16 +53,22 @@ class ApplicationWindow(QWidget):
 
     def configure_elements(self, x):
         self.granularity_level_value.move(1120 * x, 300 * x)
-        self.granularity_level_value.setStyleSheet('font-weight: 500; color: white; font-size:' + str(int(20 * x)) + 'pt;')
+        self.granularity_level_value.setStyleSheet('font-weight: 500; color: white; font-size:'
+                                                   + str(int(20 * x)) + 'pt;')
         self.granularity_level_value.adjustSize()
         self.granularity_level_text.move(850 * x, 250 * x)
         self.granularity_level_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
         self.granularity_level_text.adjustSize()
         self.generate_button.setFixedSize(300 * x, 50 * x)
-        self.generate_button.move(850 * x, 500 * x)
+        self.generate_button.move(850 * x, 470 * x)
         self.generate_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                            'border-radius: 10px; border-color: blue; font: bold ' + str(int(28 * x)) +
                                            'px; min-width: 0em; padding: 6px; color: white;')
+        self.save_path_button.setIcon(QIcon(r"materials\settings_picture.png"))
+        self.save_path_button.setStyleSheet('background-color: rgb(0, 0, 0, 0)')
+        self.save_path_button.setIconSize(QSize(80 * x, 80 * x))
+        self.save_path_button.move(1160 * x, self.generate_button.y() - 20 * x)
+        self.save_path_button.adjustSize()
         self.granularity_level.setFixedSize(220 * x, 50 * x)
         self.granularity_level.move(850 * x, 300 * x)
         self.granularity_level.setTickPosition(QSlider.TicksBelow)
@@ -99,10 +107,19 @@ class ApplicationWindow(QWidget):
                                  + 'pt; border: 2px solid blue; border-width : 2px 2px 2px 2px;')
         self.scale.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
+    def assign_buttons(self):
+        self.generate_button.clicked.connect(self.generate_art)
+        self.save_path_button.clicked.connect(self.change_save_path)
+
     def set_background(self, x):
         self.background = self.image.scaled(QSize(1280 * x, 720 * x))
         self.palette.setBrush(QPalette.Window, QBrush(self.background))
         self.setPalette(self.palette)
+
+    def change_save_path(self):
+        settings.save_path = QFileDialog.getExistingDirectory()
+        if settings.save_path != '':
+            settings.save_path += '\\'
 
     def change_granularity_level(self):
         self.granularity_level_value.setText(str(self.granularity_level.value()))
@@ -122,7 +139,7 @@ class ApplicationWindow(QWidget):
                                                    self.ascii_art.image.size[1])
         self.ascii_picture.generate_picture_art()
         self.art_label.setStyleSheet('border-style: outset; border-width: 2px; border-color: blue;')
-        self.pixmap = QPixmap('art-picture.png')
+        self.pixmap = QPixmap(settings.save_path + 'art-picture.png')
         self.configure_art()
         self.art_label.show()
 
