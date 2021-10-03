@@ -21,7 +21,7 @@ class ApplicationWindow(QWidget):
         self.image_selection_button = QPushButton('Загрузите изображение', self)
         self.save_path_button = QPushButton(self)
         self.console_mode_checkbox = QCheckBox('Консольный формат', self)
-        self.remove_distortion_button = QPushButton('Убрать искажение по оси Y', self)
+        self.remove_distortion_button = QPushButton('Исправить искажение по оси Y', self)
         self.granularity_level = QSlider(Qt.Horizontal, self)
         self.granularity_level_value = QLabel('1', self)
         self.granularity_level_text = QLabel('Выберите уровень детализации:', self)
@@ -87,7 +87,7 @@ class ApplicationWindow(QWidget):
         self.granularity_level_value.setText(str(self.granularity_level.value()))
 
     def remove_distortion(self):
-        if self.art_height.text() != '':
+        if not self.check_conditions():
             self.art_height.setText(str(int(int(self.art_height.text()) * (2 / 3))))
 
     @staticmethod
@@ -219,5 +219,5 @@ class ApplicationWindow(QWidget):
 
     def configure_hints(self, x):
         self.picture_size_hint.move(850 * x, 230 * x)
-        self.picture_size_hint.setStyleSheet('font-weight: 500; color: white; font-size:' + str(8 * x) + 'pt;')
+        self.picture_size_hint.setStyleSheet('font-weight: 500; color: white; font-size:' + str(10 * x) + 'pt;')
         self.picture_size_hint.adjustSize()
