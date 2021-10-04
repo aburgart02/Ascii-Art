@@ -22,6 +22,7 @@ class ApplicationWindow(QWidget):
         self.save_path_button = QPushButton(self)
         self.console_mode_checkbox = QCheckBox('Консольный формат', self)
         self.remove_distortion_button = QPushButton('Исправить искажение по оси Y', self)
+        self.preserving_proportions_button = QPushButton('Сохранить пропорции', self)
         self.granularity_level = QSlider(Qt.Horizontal, self)
         self.granularity_level_value = QLabel('1', self)
         self.granularity_level_text = QLabel('Выберите уровень детализации:', self)
@@ -30,7 +31,7 @@ class ApplicationWindow(QWidget):
         self.art_height = QLineEdit(self)
         self.art_width_text = QLabel('Введите ширину:', self)
         self.art_height_text = QLabel('Введите высоту:', self)
-        self.picture_size_hint = QLabel('Неверные размеры арта', self)
+        self.picture_size_hint = QLabel('Неверный размер арта', self)
         self.path = ''
         self.ascii_art = None
         self.ascii_picture = None
@@ -68,6 +69,7 @@ class ApplicationWindow(QWidget):
         self.generate_button.clicked.connect(self.generate_art)
         self.save_path_button.clicked.connect(self.change_save_path)
         self.remove_distortion_button.clicked.connect(self.remove_distortion)
+        self.preserving_proportions_button.clicked.connect(self.keep_proportions)
         self.image_selection_button.clicked.connect(self.select_image)
 
     def set_background(self, x):
@@ -87,8 +89,12 @@ class ApplicationWindow(QWidget):
         self.granularity_level_value.setText(str(self.granularity_level.value()))
 
     def remove_distortion(self):
-        if not self.check_conditions():
+        if self.check_conditions(self.art_height, 1):
             self.art_height.setText(str(int(int(self.art_height.text()) * (2 / 3))))
+
+    def keep_proportions(self):
+        if self.check_conditions(self.art_width, 0):
+            self.art_height.setText(str(int(self.image.size[1] / (self.image.size[0] / int(self.art_width.text())))))
 
     @staticmethod
     def change_save_path():
@@ -102,18 +108,17 @@ class ApplicationWindow(QWidget):
         elif self.console_mode_checkbox.isChecked():
             self.process_image(48, 32)
         else:
-            if self.check_conditions():
-                self.picture_size_hint.show()
-            else:
+            if self.check_conditions(self.art_width, 0) and self.check_conditions(self.art_height, 1):
                 self.picture_size_hint.hide()
                 self.process_image(int(self.art_width.text()), int(self.art_height.text()))
+            else:
+                self.picture_size_hint.show()
 
-    def check_conditions(self):
+    def check_conditions(self, art_parameter, axis):
         try:
-            return int(self.art_width.text()) < 1 or int(self.art_width.text()) > self.image.size[0] \
-                or int(self.art_height.text()) < 1 or int(self.art_height.text()) > self.image.size[1]
+            return 1 <= int(art_parameter.text()) <= self.image.size[axis]
         except (ValueError, AttributeError):
-            return True
+            return False
 
     def process_image(self, width, height):
         self.ascii_art = AsciiArtGenerator(self.image, width, height, int(self.granularity_level.value()), self)
@@ -136,13 +141,13 @@ class ApplicationWindow(QWidget):
 
     def configure_buttons(self, x):
         self.image_selection_button.setFixedSize(300 * x, 40 * x)
-        self.image_selection_button.move(850 * x, 440 * x)
+        self.image_selection_button.move(850 * x, 450 * x)
         self.image_selection_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                                   'border-radius: 10px; border-color: blue; font: bold '
                                                   + str(int(20 * x)) +
                                                   'px; min-width: 0em; padding: 6px; color: white;')
         self.generate_button.setFixedSize(300 * x, 50 * x)
-        self.generate_button.move(850 * x, 500 * x)
+        self.generate_button.move(850 * x, 510 * x)
         self.generate_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                            'border-radius: 10px; border-color: blue; font: bold ' + str(int(28 * x)) +
                                            'px; min-width: 0em; padding: 6px; color: white;')
@@ -151,29 +156,36 @@ class ApplicationWindow(QWidget):
         self.save_path_button.setIconSize(QSize(80 * x, 80 * x))
         self.save_path_button.move(1160 * x, self.generate_button.y() - 20 * x)
         self.save_path_button.adjustSize()
-        self.console_mode_checkbox.move(876 * x, 570 * x)
+        self.console_mode_checkbox.move(876 * x, 580 * x)
         self.console_mode_checkbox.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                                  'border-radius: 0px; border-color: blue; font: bold '
                                                  + str(int(20 * x)) + 'px; min-width: 0em; padding: 6px; color: white;')
         self.console_mode_checkbox.adjustSize()
-        self.remove_distortion_button.move(850 * x, 260 * x)
+        self.remove_distortion_button.move(850 * x, 300 * x)
         self.remove_distortion_button.setStyleSheet('background-color: #570290; border-style: outset; '
                                                     'border-width: 2px; '
                                                     'border-radius: 10px; border-color: blue; font: bold '
                                                     + str(int(20 * x)) +
                                                     'px; min-width: 0em; padding: 6px; color: white;')
         self.remove_distortion_button.adjustSize()
+        self.preserving_proportions_button.move(850 * x, 240 * x)
+        self.preserving_proportions_button.setStyleSheet('background-color: #570290; border-style: outset; '
+                                                         'border-width: 2px; '
+                                                         'border-radius: 10px; border-color: blue; font: bold '
+                                                         + str(int(20 * x)) +
+                                                         'px; min-width: 0em; padding: 6px; color: white;')
+        self.preserving_proportions_button.adjustSize()
 
     def configure_granularity_parameter(self, x):
-        self.granularity_level_value.move(1120 * x, 370 * x)
+        self.granularity_level_value.move(1120 * x, 390 * x)
         self.granularity_level_value.setStyleSheet('font-weight: 500; color: white; font-size:'
                                                    + str(int(20 * x)) + 'pt;')
         self.granularity_level_value.adjustSize()
-        self.granularity_level_text.move(850 * x, 330 * x)
-        self.granularity_level_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.granularity_level_text.move(850 * x, 360 * x)
+        self.granularity_level_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(12 * x) + 'pt;')
         self.granularity_level_text.adjustSize()
         self.granularity_level.setFixedSize(220 * x, 50 * x)
-        self.granularity_level.move(850 * x, 370 * x)
+        self.granularity_level.move(850 * x, 390 * x)
         self.granularity_level.setTickPosition(QSlider.TicksBelow)
         self.granularity_level.setRange(1, 5)
         self.granularity_level.setStyleSheet("""
@@ -218,6 +230,6 @@ class ApplicationWindow(QWidget):
         self.art_height.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
     def configure_hints(self, x):
-        self.picture_size_hint.move(850 * x, 230 * x)
-        self.picture_size_hint.setStyleSheet('font-weight: 500; color: white; font-size:' + str(10 * x) + 'pt;')
+        self.picture_size_hint.move(860 * x, 630 * x)
+        self.picture_size_hint.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
         self.picture_size_hint.adjustSize()
