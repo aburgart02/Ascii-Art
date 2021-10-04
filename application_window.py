@@ -112,7 +112,7 @@ class ApplicationWindow(QWidget):
         try:
             return int(self.art_width.text()) < 1 or int(self.art_width.text()) > self.image.size[0] \
                 or int(self.art_height.text()) < 1 or int(self.art_height.text()) > self.image.size[1]
-        except ValueError:
+        except (ValueError, AttributeError):
             return True
 
     def process_image(self, width, height):

@@ -16,7 +16,7 @@ class AsciiArtGenerator:
                 for width in range(0, self.resized_image.size[0]):
                     self.progress_bar.value += 1
                     self.progress_bar.setValue(self.progress_bar.value)
-                    average = sum([x for x in self.resized_image.getpixel((width, height))]) / 3
+                    average = sum([x for x in self.resized_image.getpixel((width, height))[:3]]) / 3
                     f.write(self.symbols[int(average) // math.ceil(255 / (len(self.symbols)))])
                 f.write('\n')
         self.progress_bar.close()
