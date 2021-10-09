@@ -1,5 +1,6 @@
 import math
 import settings
+import os.path
 from settings import granularity_levels
 from progress_bar import ProgressBar
 
@@ -11,7 +12,7 @@ class AsciiArtGenerator:
         self.progress_bar = ProgressBar(application_window, self.resized_image)
 
     def generate_text_art(self):
-        with open(settings.save_path + 'art.txt', 'w') as f:
+        with open(os.path.join(settings.save_path, 'art.txt'), 'w') as f:
             for height in range(0, self.resized_image.size[1]):
                 for width in range(0, self.resized_image.size[0]):
                     self.progress_bar.value += 1

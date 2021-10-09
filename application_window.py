@@ -1,4 +1,5 @@
 import settings
+import os.path
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QIcon
@@ -13,7 +14,7 @@ class ApplicationWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setFixedSize(1280, 720)
-        self.background_file = r"backgrounds\background.jpg"
+        self.background_file = os.path.join("backgrounds", "background.jpg")
         self.background_image = QImage(self.background_file)
         self.background = self.background_image.scaled(QSize(1280, 720))
         self.palette = QPalette()
@@ -99,8 +100,6 @@ class ApplicationWindow(QWidget):
     @staticmethod
     def change_save_path():
         settings.save_path = QFileDialog.getExistingDirectory()
-        if settings.save_path != '':
-            settings.save_path += '\\'
 
     def generate_art(self):
         if self.path == '':
@@ -126,7 +125,7 @@ class ApplicationWindow(QWidget):
         self.ascii_picture = AsciiPictureGenerator(int(self.image.size[0] / width), self.image.size[0],
                                                    self.image.size[1])
         self.ascii_picture.generate_picture_art()
-        self.pixmap = QPixmap(settings.save_path + 'art-picture.png')
+        self.pixmap = QPixmap(os.path.join(settings.save_path, 'art-picture.png'))
         self.configure_art()
         self.art_label.show()
 
@@ -151,7 +150,7 @@ class ApplicationWindow(QWidget):
         self.generate_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                            'border-radius: 10px; border-color: blue; font: bold ' + str(int(28 * x)) +
                                            'px; min-width: 0em; padding: 6px; color: white;')
-        self.save_path_button.setIcon(QIcon(r"materials\settings_picture.png"))
+        self.save_path_button.setIcon(QIcon(os.path.join("materials", "settings_picture.png")))
         self.save_path_button.setStyleSheet('background-color: rgb(0, 0, 0, 0)')
         self.save_path_button.setIconSize(QSize(80 * x, 80 * x))
         self.save_path_button.move(1160 * x, self.generate_button.y() - 20 * x)
