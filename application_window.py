@@ -33,7 +33,8 @@ class ApplicationWindow(QWidget):
         self.art_height = QLineEdit(self)
         self.art_width_text = QLabel('Введите ширину:', self)
         self.art_height_text = QLabel('Введите высоту:', self)
-        self.picture_size_hint = QLabel('Неверный размер арта', self)
+        self.picture_size_hint_1 = QLabel('Неверный размер арта', self)
+        self.picture_size_hint_2 = QLabel('Изображение не загружено', self)
         self.path = ''
         self.ascii_art = None
         self.ascii_picture = None
@@ -42,7 +43,7 @@ class ApplicationWindow(QWidget):
         self.pixmap = None
         self.set_background(1)
         self.configure_elements(1)
-        self.picture_size_hint.hide()
+        self.hide_hints()
         self.assign_buttons()
         self.show()
 
@@ -61,6 +62,10 @@ class ApplicationWindow(QWidget):
             self.configure_elements(resolution_ratio)
         if self.art_label.pixmap():
             self.configure_art()
+
+    def hide_hints(self):
+        self.picture_size_hint_1.hide()
+        self.picture_size_hint_2.hide()
 
     def configure_elements(self, x):
         self.configure_buttons(x)
@@ -86,6 +91,10 @@ class ApplicationWindow(QWidget):
             return
         self.image = Image.open(self.path)
         self.pixmap = QPixmap(self.path)
+        if self.pixmap is None:
+            self.picture_size_hint_2.show()
+        else:
+            self.picture_size_hint_2.hide()
         self.configure_art()
 
     def change_granularity_level(self):
@@ -105,15 +114,16 @@ class ApplicationWindow(QWidget):
 
     def generate_art(self):
         if self.path == '':
+            self.picture_size_hint_2.show()
             return
         elif self.console_mode_checkbox.isChecked():
             self.process_image(48, 32)
         else:
             if self.check_conditions(self.art_width, 0) and self.check_conditions(self.art_height, 1):
-                self.picture_size_hint.hide()
+                self.picture_size_hint_1.hide()
                 self.process_image(int(self.art_width.text()), int(self.art_height.text()))
             else:
-                self.picture_size_hint.show()
+                self.picture_size_hint_1.show()
 
     def check_conditions(self, art_parameter, axis):
         try:
@@ -233,6 +243,9 @@ class ApplicationWindow(QWidget):
         self.art_height.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
     def configure_hints(self, x):
-        self.picture_size_hint.move(860 * x, 630 * x)
-        self.picture_size_hint.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
-        self.picture_size_hint.adjustSize()
+        self.picture_size_hint_1.move(860 * x, 630 * x)
+        self.picture_size_hint_1.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.picture_size_hint_1.adjustSize()
+        self.picture_size_hint_2.move(860 * x, 630 * x)
+        self.picture_size_hint_2.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.picture_size_hint_2.adjustSize()
