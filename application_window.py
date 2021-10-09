@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QSlider, QLineEdit, QLabel, QF
 from PIL import Image
 from ascii_art_generator import AsciiArtGenerator
 from ascii_picture_generator import AsciiPictureGenerator
+from progress_bar import ProgressBar
 from settings import resolution_ratio
 
 
@@ -36,6 +37,7 @@ class ApplicationWindow(QWidget):
         self.path = ''
         self.ascii_art = None
         self.ascii_picture = None
+        self.progress_bar = None
         self.image = None
         self.pixmap = None
         self.set_background(1)
@@ -120,7 +122,9 @@ class ApplicationWindow(QWidget):
             return False
 
     def process_image(self, width, height):
-        self.ascii_art = AsciiArtGenerator(self.image, width, height, int(self.granularity_level.value()), self)
+        self.progress_bar = ProgressBar(self, width, height)
+        self.ascii_art = AsciiArtGenerator(self.path, width, height,
+                                           int(self.granularity_level.value()), self.progress_bar)
         self.ascii_art.generate_text_art()
         self.ascii_picture = AsciiPictureGenerator(int(self.image.size[0] / width), self.image.size[0],
                                                    self.image.size[1])

@@ -3,9 +3,9 @@ from settings import resolution_ratio
 
 
 class ProgressBar(QProgressBar):
-    def __init__(self, application_window, image):
+    def __init__(self, application_window, width, height):
         super().__init__(application_window)
-        self.setMaximum(image.size[0] * image.size[1])
+        self.setMaximum(width * height)
         self.value = 0
         if application_window.isFullScreen():
             self.setFixedSize(360 * resolution_ratio, 40 * resolution_ratio)
