@@ -22,7 +22,7 @@ class ApplicationWindow(QWidget):
         self.generate_button = QPushButton('Обработать', self)
         self.image_selection_button = QPushButton('Загрузите изображение', self)
         self.save_path_button = QPushButton(self)
-        self.console_mode_checkbox = QCheckBox('Консольный формат', self)
+        self.roberts_filter_checkbox = QCheckBox('Фильтр Робертса', self)
         self.remove_distortion_button = QPushButton('Исправить искажение по оси Y', self)
         self.preserving_proportions_button = QPushButton('Сохранить пропорции', self)
         self.granularity_level = QSlider(Qt.Horizontal, self)
@@ -116,12 +116,11 @@ class ApplicationWindow(QWidget):
         if self.path == '':
             self.picture_size_hint_2.show()
             return
-        elif self.console_mode_checkbox.isChecked():
-            self.process_image(48, 32)
         else:
             if self.check_conditions(self.art_width, 0) and self.check_conditions(self.art_height, 1):
                 self.picture_size_hint_1.hide()
-                self.process_image(int(self.art_width.text()), int(self.art_height.text()))
+                self.process_image(int(self.art_width.text()), int(self.art_height.text()),
+                                   self.roberts_filter_checkbox.isChecked())
             else:
                 self.picture_size_hint_1.show()
 
@@ -131,10 +130,10 @@ class ApplicationWindow(QWidget):
         except (ValueError, AttributeError):
             return False
 
-    def process_image(self, width, height):
+    def process_image(self, width, height, roberts_filter_mode):
         self.progress_bar = ProgressBar(self, width, height)
         self.ascii_art = AsciiArtGenerator(self.path, width, height,
-                                           int(self.granularity_level.value()), self.progress_bar)
+                                           roberts_filter_mode, int(self.granularity_level.value()), self.progress_bar)
         self.ascii_art.generate_text_art()
         self.ascii_picture = AsciiPictureGenerator(int(self.image.size[0] / width), self.image.size[0],
                                                    self.image.size[1])
@@ -169,11 +168,12 @@ class ApplicationWindow(QWidget):
         self.save_path_button.setIconSize(QSize(80 * x, 80 * x))
         self.save_path_button.move(1160 * x, self.generate_button.y() - 20 * x)
         self.save_path_button.adjustSize()
-        self.console_mode_checkbox.move(876 * x, 580 * x)
-        self.console_mode_checkbox.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
-                                                 'border-radius: 0px; border-color: blue; font: bold '
-                                                 + str(int(20 * x)) + 'px; min-width: 0em; padding: 6px; color: white;')
-        self.console_mode_checkbox.adjustSize()
+        self.roberts_filter_checkbox.move(890 * x, 580 * x)
+        self.roberts_filter_checkbox.setStyleSheet('background-color: #570290; border-style: outset; '
+                                                   'border-width: 2px; border-radius: 0px; border-color: blue; '
+                                                   'font: bold ' + str(int(20 * x)) + 'px; min-width: 0em; '
+                                                                                      'padding: 6px; color: white;')
+        self.roberts_filter_checkbox.adjustSize()
         self.remove_distortion_button.move(850 * x, 300 * x)
         self.remove_distortion_button.setStyleSheet('background-color: #570290; border-style: outset; '
                                                     'border-width: 2px; '
