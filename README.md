@@ -8,7 +8,7 @@ Ascii-Art
 
 CLI:
 
-ascii_art_generator.py <image_path> <art_width> <art_height>
+ascii_art_generator.py <image_path> <art_width> <art_height> <on/off>(Roberts filter)
 
 Необходимо установить:
 
