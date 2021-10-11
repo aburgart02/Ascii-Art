@@ -10,6 +10,8 @@ from ascii_picture_generator import AsciiPictureGenerator
 from progress_bar import ProgressBar
 from settings import resolution_ratio
 
+F11_KEY = 16777274
+
 
 class ApplicationWindow(QWidget):
     def __init__(self):
@@ -48,7 +50,7 @@ class ApplicationWindow(QWidget):
         self.show()
 
     def keyPressEvent(self, e):
-        if e.key() == 16777274:
+        if e.key() == F11_KEY:
             self.change_resolution()
 
     def change_resolution(self):
@@ -81,7 +83,7 @@ class ApplicationWindow(QWidget):
         self.image_selection_button.clicked.connect(self.select_image)
 
     def set_background(self, x):
-        self.background = self.background_image.scaled(QSize(1280 * x, 720 * x))
+        self.background = self.background_image.scaled(QSize(int(1280 * x), int(720 * x)))
         self.palette.setBrush(QPalette.Window, QBrush(self.background))
         self.setPalette(self.palette)
 
@@ -152,36 +154,36 @@ class ApplicationWindow(QWidget):
         self.art_label.move(0, (self.height() - self.art_label.height()) // 2)
 
     def configure_buttons(self, x):
-        self.image_selection_button.setFixedSize(300 * x, 40 * x)
-        self.image_selection_button.move(850 * x, 450 * x)
+        self.image_selection_button.setFixedSize(int(300 * x), int(40 * x))
+        self.image_selection_button.move(int(850 * x), int(450 * x))
         self.image_selection_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                                   'border-radius: 10px; border-color: blue; font: bold '
                                                   + str(int(20 * x)) +
                                                   'px; min-width: 0em; padding: 6px; color: white;')
-        self.generate_button.setFixedSize(300 * x, 50 * x)
-        self.generate_button.move(850 * x, 510 * x)
+        self.generate_button.setFixedSize(int(300 * x), int(50 * x))
+        self.generate_button.move(int(850 * x), int(510 * x))
         self.generate_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
                                            'border-radius: 10px; border-color: blue; font: bold ' + str(int(28 * x)) +
                                            'px; min-width: 0em; padding: 6px; color: white;')
         self.save_path_button.setIcon(QIcon(os.path.join("materials", "settings_picture.png")))
         self.save_path_button.setStyleSheet('background-color: rgb(0, 0, 0, 0)')
-        self.save_path_button.setIconSize(QSize(80 * x, 80 * x))
-        self.save_path_button.move(1160 * x, self.generate_button.y() - 20 * x)
+        self.save_path_button.setIconSize(QSize(int(80 * x), int(80 * x)))
+        self.save_path_button.move(int(1160 * x), int(self.generate_button.y() - 20 * x))
         self.save_path_button.adjustSize()
-        self.roberts_filter_checkbox.move(890 * x, 580 * x)
+        self.roberts_filter_checkbox.move(int(890 * x), int(580 * x))
         self.roberts_filter_checkbox.setStyleSheet('background-color: #570290; border-style: outset; '
                                                    'border-width: 2px; border-radius: 0px; border-color: blue; '
                                                    'font: bold ' + str(int(20 * x)) + 'px; min-width: 0em; '
                                                                                       'padding: 6px; color: white;')
         self.roberts_filter_checkbox.adjustSize()
-        self.remove_distortion_button.move(850 * x, 300 * x)
+        self.remove_distortion_button.move(int(850 * x), int(300 * x))
         self.remove_distortion_button.setStyleSheet('background-color: #570290; border-style: outset; '
                                                     'border-width: 2px; '
                                                     'border-radius: 10px; border-color: blue; font: bold '
                                                     + str(int(20 * x)) +
                                                     'px; min-width: 0em; padding: 6px; color: white;')
         self.remove_distortion_button.adjustSize()
-        self.preserving_proportions_button.move(850 * x, 240 * x)
+        self.preserving_proportions_button.move(int(850 * x), int(240 * x))
         self.preserving_proportions_button.setStyleSheet('background-color: #570290; border-style: outset; '
                                                          'border-width: 2px; '
                                                          'border-radius: 10px; border-color: blue; font: bold '
@@ -190,15 +192,15 @@ class ApplicationWindow(QWidget):
         self.preserving_proportions_button.adjustSize()
 
     def configure_granularity_parameter(self, x):
-        self.granularity_level_value.move(1120 * x, 390 * x)
+        self.granularity_level_value.move(int(1120 * x), int(390 * x))
         self.granularity_level_value.setStyleSheet('font-weight: 500; color: white; font-size:'
                                                    + str(int(20 * x)) + 'pt;')
         self.granularity_level_value.adjustSize()
-        self.granularity_level_text.move(850 * x, 360 * x)
+        self.granularity_level_text.move(int(850 * x), int(360 * x))
         self.granularity_level_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(12 * x) + 'pt;')
         self.granularity_level_text.adjustSize()
-        self.granularity_level.setFixedSize(220 * x, 50 * x)
-        self.granularity_level.move(850 * x, 390 * x)
+        self.granularity_level.setFixedSize(int(220 * x), int(50 * x))
+        self.granularity_level.move(int(850 * x), int(390 * x))
         self.granularity_level.setTickPosition(QSlider.TicksBelow)
         self.granularity_level.setRange(1, 5)
         self.granularity_level.setStyleSheet("""
@@ -225,27 +227,27 @@ class ApplicationWindow(QWidget):
         self.granularity_level.valueChanged.connect(self.change_granularity_level)
 
     def configure_size_parameters(self, x):
-        self.art_width_text.move(850 * x, 30 * x)
+        self.art_width_text.move(int(850 * x), int(30 * x))
         self.art_width_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
         self.art_width_text.adjustSize()
-        self.art_height_text.move(850 * x, 130 * x)
+        self.art_height_text.move(int(850 * x), int(130 * x))
         self.art_height_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
         self.art_height_text.adjustSize()
-        self.art_width.setFixedSize(300 * x, 50 * x)
-        self.art_width.move(850 * x, 70 * x)
+        self.art_width.setFixedSize(int(300 * x), int(50 * x))
+        self.art_width.move(int(850 * x), int(70 * x))
         self.art_width.setStyleSheet('background : #570290; font-weight: 500; color: white; font-size:' + str(18 * x)
                                      + 'pt; border: 2px solid blue; border-picture_width : 2px 2px 2px 2px;')
         self.art_width.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.art_height.setFixedSize(300 * x, 50 * x)
-        self.art_height.move(850 * x, 170 * x)
+        self.art_height.setFixedSize(int(300 * x), int(50 * x))
+        self.art_height.move(int(850 * x), int(170 * x))
         self.art_height.setStyleSheet('background : #570290; font-weight: 500; color: white; font-size:' + str(18 * x)
                                       + 'pt; border: 2px solid blue; border-picture_width : 2px 2px 2px 2px;')
         self.art_height.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
     def configure_hints(self, x):
-        self.picture_size_hint_1.move(860 * x, 630 * x)
+        self.picture_size_hint_1.move(int(860 * x), int(630 * x))
         self.picture_size_hint_1.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
         self.picture_size_hint_1.adjustSize()
-        self.picture_size_hint_2.move(860 * x, 630 * x)
+        self.picture_size_hint_2.move(int(860 * x), int(630 * x))
         self.picture_size_hint_2.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
         self.picture_size_hint_2.adjustSize()
