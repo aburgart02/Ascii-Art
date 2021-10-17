@@ -1,37 +1,12 @@
 import os.path
 import settings
-from PyQt5 import QtGui
-from application_window import ApplicationWindow
 from ascii_art_generator import AsciiArtGenerator
 from ascii_picture_generator import AsciiPictureGenerator
-from progress_bar import ProgressBar
 
-application = ApplicationWindow()
-progress_bar_widget = ProgressBar(application, 100, 100)
+
 art_generator = AsciiArtGenerator(os.path.join('pictures', 'photo_1.jpg'), 100, 100, False)
 art_generator.generate_text_art()
 picture_generator = AsciiPictureGenerator(1, 100, 100)
-
-
-class TestApplicationWindow:
-    def test_application_window_size(self):
-        assert application.size().width() == 1280 and application.size().height() == 720
-
-    def test_background_loading(self):
-        assert type(application.background) is QtGui.QImage
-
-    def test_toggle_full_screen_on(self):
-        application.change_resolution()
-        assert application.isFullScreen()
-
-    def test_toggle_full_screen_off(self):
-        application.change_resolution()
-        assert not application.isFullScreen()
-
-
-class TestProgressBar:
-    def test_maximum_value_setting(self):
-        assert progress_bar_widget.maximum() == 10000
 
 
 class TestAsciiArtGenerator:

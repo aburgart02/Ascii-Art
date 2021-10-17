@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QProgressBar
-from settings import resolution_ratio
 
 
 class ProgressBar(QProgressBar):
@@ -8,9 +7,9 @@ class ProgressBar(QProgressBar):
         self.setMaximum(width * height)
         self.value = 0
         if application_window.isFullScreen():
-            self.setFixedSize(360 * resolution_ratio, 40 * resolution_ratio)
-            self.setStyleSheet('color: white; font-size: ' + str(int(20 * resolution_ratio)) + 'px')
-            self.move(850 * resolution_ratio, 640 * resolution_ratio)
+            self.setFixedSize(360 * application_window.resolution_ratio, 40 * application_window.resolution_ratio)
+            self.setStyleSheet('color: white; font-size: ' + str(int(20 * application_window.resolution_ratio)) + 'px')
+            self.move(850 * application_window.resolution_ratio, 640 * application_window.resolution_ratio)
         else:
             self.setFixedSize(360, 40)
             self.setStyleSheet('color: white; font-size: 20px')

@@ -3,12 +3,11 @@ import os.path
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QIcon
-from PyQt5.QtWidgets import QWidget, QPushButton, QSlider, QLineEdit, QLabel, QFileDialog, QCheckBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QSlider, QLineEdit, QLabel, QFileDialog, QCheckBox, QDesktopWidget
 from PIL import Image
 from ascii_art_generator import AsciiArtGenerator
 from ascii_picture_generator import AsciiPictureGenerator
 from progress_bar import ProgressBar
-from settings import resolution_ratio
 
 F11_KEY = 16777274
 
@@ -17,6 +16,7 @@ class ApplicationWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setFixedSize(1280, 720)
+        self.resolution_ratio = QDesktopWidget().availableGeometry().width() / 1280
         self.background_file = os.path.join("backgrounds", "background.jpg")
         self.background_image = QImage(self.background_file)
         self.background = self.background_image.scaled(QSize(1280, 720))
@@ -60,8 +60,8 @@ class ApplicationWindow(QWidget):
             self.configure_elements(1)
         else:
             self.showFullScreen()
-            self.set_background(resolution_ratio)
-            self.configure_elements(resolution_ratio)
+            self.set_background(self.resolution_ratio)
+            self.configure_elements(self.resolution_ratio)
         if self.art_label.pixmap():
             self.configure_art()
 
