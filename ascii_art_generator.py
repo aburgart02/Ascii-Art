@@ -46,17 +46,17 @@ class AsciiArtGenerator:
 
 
 @click.command()
-@click.argument('path_to_image')
-@click.argument('save_path', default='art.txt')
-@click.argument('roberts_filter_mode', default='off')
-@click.argument('width', default=150)
-@click.argument('height', default=100)
-def generate_art(path_to_image, save_path, roberts_filter_mode, width, height):
-    if roberts_filter_mode == 'on':
-        ascii_art_generator = AsciiArtGenerator(path_to_image, int(width), int(height), True, None, None, save_path)
+@click.option('-ip', required=True, help='Image path')
+@click.option('-sp', default='art.txt', help='Save path')
+@click.option('-m', default='off', type=click.Choice(['on', 'off']), help='Image processing mode')
+@click.option('-w', default=150, help='Art width')
+@click.option('-h', default=100, help='Art height')
+def generate_art(ip, sp, m, w, h):
+    if m == 'on':
+        ascii_art_generator = AsciiArtGenerator(ip, int(w), int(h), True, None, None, sp)
         ascii_art_generator.generate_text_art()
-    if roberts_filter_mode == 'off':
-        ascii_art_generator = AsciiArtGenerator(path_to_image, int(width), int(height), False, None, None, save_path)
+    if m == 'off':
+        ascii_art_generator = AsciiArtGenerator(ip, int(w), int(h), False, None, None, sp)
         ascii_art_generator.generate_text_art()
 
 
