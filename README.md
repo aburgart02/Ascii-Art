@@ -12,17 +12,17 @@ ascii_art_generator.py
 
 Options:
 
-  -ip TEXT     Image path  [required]
+  -ip TEXT     (Путь к изображению)
   
-  -sp TEXT     Save path
+  -sp TEXT     (Путь сохранения арта)
   
-  -m [on|off]  Image processing mode
+  -m [on|off]  (Режим обработки изображения)
   
-  -w INTEGER   Art width
+  -w INTEGER   (Ширина арта)
   
-  -h INTEGER   Art height
+  -h INTEGER   (Высота арта)
   
-  --help       Show this message and exit.
+  --help
 
 Необходимо установить:
 
