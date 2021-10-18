@@ -8,7 +8,21 @@ Ascii-Art
 
 CLI:
 
-ascii_art_generator.py <image_path> <art_width> <art_height> <on/off>(Roberts filter)
+ascii_art_generator.py
+
+Options:
+
+  -ip TEXT     Image path  [required]
+  
+  -sp TEXT     Save path
+  
+  -m [on|off]  Image processing mode
+  
+  -w INTEGER   Art width
+  
+  -h INTEGER   Art height
+  
+  --help       Show this message and exit.
 
 Необходимо установить:
 
