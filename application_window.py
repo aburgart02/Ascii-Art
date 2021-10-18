@@ -145,7 +145,7 @@ class ApplicationWindow(QWidget):
         self.art_label.show()
 
     def configure_art(self):
-        self.art_label.setStyleSheet('border-style: outset; border-width: 2px; border-color: blue;')
+        self.art_label.setStyleSheet(settings.art_label_style)
         if self.isFullScreen():
             self.art_label.setPixmap(self.pixmap.scaled(QSize(1080, 1080), Qt.KeepAspectRatio))
         else:
@@ -156,98 +156,59 @@ class ApplicationWindow(QWidget):
     def configure_buttons(self, x):
         self.image_selection_button.setFixedSize(int(300 * x), int(40 * x))
         self.image_selection_button.move(int(850 * x), int(450 * x))
-        self.image_selection_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
-                                                  'border-radius: 10px; border-color: blue; font: bold '
-                                                  + str(int(20 * x)) +
-                                                  'px; min-width: 0em; padding: 6px; color: white;')
+        self.image_selection_button.setStyleSheet(settings.button_style.format(str(int(20 * x))))
         self.generate_button.setFixedSize(int(300 * x), int(50 * x))
         self.generate_button.move(int(850 * x), int(510 * x))
-        self.generate_button.setStyleSheet('background-color: #570290; border-style: outset; border-width: 2px; '
-                                           'border-radius: 10px; border-color: blue; font: bold ' + str(int(28 * x)) +
-                                           'px; min-width: 0em; padding: 6px; color: white;')
+        self.generate_button.setStyleSheet(settings.button_style.format(str(int(28 * x))))
         self.save_path_button.setIcon(QIcon(os.path.join("materials", "settings_picture.png")))
         self.save_path_button.setStyleSheet('background-color: rgb(0, 0, 0, 0)')
         self.save_path_button.setIconSize(QSize(int(80 * x), int(80 * x)))
         self.save_path_button.move(int(1160 * x), int(self.generate_button.y() - 20 * x))
         self.save_path_button.adjustSize()
         self.roberts_filter_checkbox.move(int(890 * x), int(580 * x))
-        self.roberts_filter_checkbox.setStyleSheet('background-color: #570290; border-style: outset; '
-                                                   'border-width: 2px; border-radius: 0px; border-color: blue; '
-                                                   'font: bold ' + str(int(20 * x)) + 'px; min-width: 0em; '
-                                                                                      'padding: 6px; color: white;')
+        self.roberts_filter_checkbox.setStyleSheet(settings.roberts_filter_checkbox_style.format(str(int(20 * x))))
         self.roberts_filter_checkbox.adjustSize()
         self.remove_distortion_button.move(int(850 * x), int(300 * x))
-        self.remove_distortion_button.setStyleSheet('background-color: #570290; border-style: outset; '
-                                                    'border-width: 2px; '
-                                                    'border-radius: 10px; border-color: blue; font: bold '
-                                                    + str(int(20 * x)) +
-                                                    'px; min-width: 0em; padding: 6px; color: white;')
+        self.remove_distortion_button.setStyleSheet(settings.button_style.format(str(int(20 * x))))
         self.remove_distortion_button.adjustSize()
         self.preserving_proportions_button.move(int(850 * x), int(240 * x))
-        self.preserving_proportions_button.setStyleSheet('background-color: #570290; border-style: outset; '
-                                                         'border-width: 2px; '
-                                                         'border-radius: 10px; border-color: blue; font: bold '
-                                                         + str(int(20 * x)) +
-                                                         'px; min-width: 0em; padding: 6px; color: white;')
+        self.preserving_proportions_button.setStyleSheet(settings.button_style.format(str(int(20 * x))))
         self.preserving_proportions_button.adjustSize()
 
     def configure_granularity_parameter(self, x):
         self.granularity_level_value.move(int(1120 * x), int(390 * x))
-        self.granularity_level_value.setStyleSheet('font-weight: 500; color: white; font-size:'
-                                                   + str(int(20 * x)) + 'pt;')
+        self.granularity_level_value.setStyleSheet(settings.text_style.format(str(int(20 * x))))
         self.granularity_level_value.adjustSize()
         self.granularity_level_text.move(int(850 * x), int(360 * x))
-        self.granularity_level_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(12 * x) + 'pt;')
+        self.granularity_level_text.setStyleSheet(settings.text_style.format(str(12 * x)))
         self.granularity_level_text.adjustSize()
         self.granularity_level.setFixedSize(int(220 * x), int(50 * x))
         self.granularity_level.move(int(850 * x), int(390 * x))
         self.granularity_level.setTickPosition(QSlider.TicksBelow)
         self.granularity_level.setRange(1, 5)
-        self.granularity_level.setStyleSheet("""
-                            QSlider{
-                            }
-                            QSlider::groove:horizontal {  
-                                height: 10px;
-                                margin: 0px;
-                                border-radius: 5px;
-                                background: #B0AEB1;
-                            }
-                            QSlider::handle:horizontal {
-                                background: #570290;
-                                border: 1px solid #E3DEE2;
-                                width: 17px;
-                                margin: -5px 0; 
-                                border-radius: 8px;
-                            }
-                            QSlider::sub-page:qlineargradient {
-                                background: #0478C6;
-                                border-radius: 5px;
-                            }
-                        """)
+        self.granularity_level.setStyleSheet(settings.slider_style)
         self.granularity_level.valueChanged.connect(self.change_granularity_level)
 
     def configure_size_parameters(self, x):
         self.art_width_text.move(int(850 * x), int(30 * x))
-        self.art_width_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.art_width_text.setStyleSheet(settings.text_style.format(str(14 * x)))
         self.art_width_text.adjustSize()
         self.art_height_text.move(int(850 * x), int(130 * x))
-        self.art_height_text.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.art_height_text.setStyleSheet(settings.text_style.format(str(14 * x)))
         self.art_height_text.adjustSize()
         self.art_width.setFixedSize(int(300 * x), int(50 * x))
         self.art_width.move(int(850 * x), int(70 * x))
-        self.art_width.setStyleSheet('background : #570290; font-weight: 500; color: white; font-size:' + str(18 * x)
-                                     + 'pt; border: 2px solid blue; border-picture_width : 2px 2px 2px 2px;')
+        self.art_width.setStyleSheet(settings.size_input_fields_style.format(str(18 * x)))
         self.art_width.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.art_height.setFixedSize(int(300 * x), int(50 * x))
         self.art_height.move(int(850 * x), int(170 * x))
-        self.art_height.setStyleSheet('background : #570290; font-weight: 500; color: white; font-size:' + str(18 * x)
-                                      + 'pt; border: 2px solid blue; border-picture_width : 2px 2px 2px 2px;')
+        self.art_height.setStyleSheet(settings.size_input_fields_style.format(str(18 * x)))
         self.art_height.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
     def configure_hints(self, x):
         self.picture_size_hint_1.move(int(860 * x), int(630 * x))
-        self.picture_size_hint_1.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.picture_size_hint_1.setStyleSheet(settings.text_style.format(str(14 * x)))
         self.picture_size_hint_1.adjustSize()
         self.picture_size_hint_2.move(int(860 * x), int(630 * x))
-        self.picture_size_hint_2.setStyleSheet('font-weight: 500; color: white; font-size:' + str(14 * x) + 'pt;')
+        self.picture_size_hint_2.setStyleSheet(settings.text_style.format(str(14 * x)))
         self.picture_size_hint_2.adjustSize()
