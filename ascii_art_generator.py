@@ -1,3 +1,5 @@
+import sys
+import PIL
 import math
 import settings
 import os.path
@@ -9,7 +11,7 @@ from settings import granularity_levels
 class AsciiArtGenerator:
     def __init__(self, path, width, height, roberts_filter_mode, granularity_level=None,
                  progress_bar=None, save_path=None):
-        self.image = Image.open(path)
+        self.image = self.load_image(path)
         self.symbols = granularity_levels[granularity_level - 1] if granularity_level is not None \
             else ['@', '#', 'S', '%', '?', '*', '+', ':', ',', '.', ' ']
         self.resized_image = self.image.resize((width, height), resample=0, box=None)
@@ -43,6 +45,18 @@ class AsciiArtGenerator:
                 result = 255 - int(math.sqrt(g1 * g1 + g2 * g2))
                 image.putpixel((width, height), (result, result, result))
         return image
+
+    @staticmethod
+    def load_image(path):
+        sys.tracebacklimit = 0
+        try:
+            return Image.open(path)
+        except PIL.UnidentifiedImageError as e:
+            raise e
+        except FileNotFoundError as e:
+            raise e
+        except FileExistsError as e:
+            raise e
 
 
 @click.command()

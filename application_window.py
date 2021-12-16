@@ -1,3 +1,4 @@
+import PIL
 import settings
 import os.path
 from PyQt5 import QtCore
@@ -35,8 +36,7 @@ class ApplicationWindow(QWidget):
         self.art_height = QLineEdit(self)
         self.art_width_text = QLabel('Введите ширину:', self)
         self.art_height_text = QLabel('Введите высоту:', self)
-        self.picture_size_hint_1 = QLabel('Неверный размер арта', self)
-        self.picture_size_hint_2 = QLabel('Изображение не загружено', self)
+        self.picture_size_hint = QLabel(self)
         self.path = ''
         self.ascii_art = None
         self.ascii_picture = None
@@ -45,7 +45,6 @@ class ApplicationWindow(QWidget):
         self.pixmap = None
         self.set_background(1)
         self.configure_elements(1)
-        self.hide_hints()
         self.assign_buttons()
         self.show()
 
@@ -65,15 +64,11 @@ class ApplicationWindow(QWidget):
         if self.art_label.pixmap():
             self.configure_art()
 
-    def hide_hints(self):
-        self.picture_size_hint_1.hide()
-        self.picture_size_hint_2.hide()
-
     def configure_elements(self, x):
         self.configure_buttons(x)
         self.configure_granularity_parameter(x)
         self.configure_size_parameters(x)
-        self.configure_hints(x)
+        self.configure_hint(x)
 
     def assign_buttons(self):
         self.generate_button.clicked.connect(self.generate_art)
@@ -87,17 +82,32 @@ class ApplicationWindow(QWidget):
         self.palette.setBrush(QPalette.Window, QBrush(self.background))
         self.setPalette(self.palette)
 
+    def set_hint(self, text):
+        self.picture_size_hint.setText(text)
+        self.picture_size_hint.adjustSize()
+        self.picture_size_hint.show()
+
     def select_image(self):
-        self.path = QFileDialog.getOpenFileName()[0]
+        self.path = QFileDialog.getOpenFileName(filter="Images (*.png *.jpg *bmp)")[0]
         if self.path == '':
             return
-        self.image = Image.open(self.path)
         self.pixmap = QPixmap(self.path)
         if self.pixmap is None:
-            self.picture_size_hint_2.show()
+            self.set_hint('Изображение не загружено')
         else:
-            self.picture_size_hint_2.hide()
+            self.picture_size_hint.hide()
+        self.image = self.load_image()
         self.configure_art()
+
+    def load_image(self):
+        try:
+            return Image.open(self.path)
+        except PIL.UnidentifiedImageError:
+            self.set_hint('Неверный формат файла')
+        except FileNotFoundError:
+            self.set_hint('Файл не найден')
+        except FileExistsError:
+            self.set_hint('Файл не существует')
 
     def change_granularity_level(self):
         self.granularity_level_value.setText(str(self.granularity_level.value()))
@@ -115,16 +125,16 @@ class ApplicationWindow(QWidget):
         settings.save_path = QFileDialog.getExistingDirectory()
 
     def generate_art(self):
-        if self.path == '':
-            self.picture_size_hint_2.show()
+        if self.image is None:
+            self.set_hint('Изображение не загружено')
             return
         else:
             if self.check_conditions(self.art_width, 0) and self.check_conditions(self.art_height, 1):
-                self.picture_size_hint_1.hide()
+                self.picture_size_hint.hide()
                 self.process_image(int(self.art_width.text()), int(self.art_height.text()),
                                    self.roberts_filter_checkbox.isChecked())
             else:
-                self.picture_size_hint_1.show()
+                self.set_hint('Неверный размер арта')
 
     def check_conditions(self, art_parameter, axis):
         try:
@@ -205,10 +215,7 @@ class ApplicationWindow(QWidget):
         self.art_height.setStyleSheet(settings.size_input_fields_style.format(str(18 * x)))
         self.art_height.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-    def configure_hints(self, x):
-        self.picture_size_hint_1.move(int(860 * x), int(630 * x))
-        self.picture_size_hint_1.setStyleSheet(settings.text_style.format(str(14 * x)))
-        self.picture_size_hint_1.adjustSize()
-        self.picture_size_hint_2.move(int(860 * x), int(630 * x))
-        self.picture_size_hint_2.setStyleSheet(settings.text_style.format(str(14 * x)))
-        self.picture_size_hint_2.adjustSize()
+    def configure_hint(self, x):
+        self.picture_size_hint.move(int(860 * x), int(630 * x))
+        self.picture_size_hint.setStyleSheet(settings.text_style.format(str(14 * x)))
+        self.picture_size_hint.adjustSize()
