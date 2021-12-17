@@ -48,7 +48,6 @@ class AsciiArtGenerator:
 
     @staticmethod
     def load_image(path):
-        sys.tracebacklimit = 0
         try:
             return Image.open(path)
         except PIL.UnidentifiedImageError as e:
@@ -66,6 +65,7 @@ class AsciiArtGenerator:
 @click.option('-w', default=150, help='Art width')
 @click.option('-h', default=100, help='Art height')
 def generate_art(ip, sp, m, w, h):
+    sys.tracebacklimit = 0
     if m == 'on':
         ascii_art_generator = AsciiArtGenerator(ip, int(w), int(h), True, None, None, sp)
         ascii_art_generator.generate_text_art()
