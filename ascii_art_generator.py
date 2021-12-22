@@ -1,5 +1,3 @@
-import sys
-import PIL
 import math
 import settings
 import os.path
@@ -9,25 +7,24 @@ from settings import granularity_levels
 
 
 class AsciiArtGenerator:
-    def __init__(self, path, width, height, roberts_filter_mode, granularity_level=None,
-                 progress_bar=None, save_path=None):
-        self.image = self.load_image(path)
+    def __init__(self, granularity_level=None, progress_bar=None):
         self.symbols = granularity_levels[granularity_level - 1] if granularity_level is not None \
             else ['@', '#', 'S', '%', '?', '*', '+', ':', ',', '.', ' ']
-        self.resized_image = self.image.resize((width, height), resample=0, box=None)
-        if roberts_filter_mode:
-            self.resized_image = self.roberts_cross(self.resized_image)
         self.progress_bar = progress_bar
-        self.save_path = os.path.join(settings.save_path, 'art.txt') if save_path is None else save_path
 
-    def generate_text_art(self):
-        with open(self.save_path, 'w') as f:
-            for height in range(0, self.resized_image.size[1]):
-                for width in range(0, self.resized_image.size[0]):
+    def generate_text_art(self, path, width, height, roberts_filter_mode, save_path=None):
+        image = Image.open(path)
+        resized_image = image.resize((width, height), resample=0, box=None)
+        if roberts_filter_mode:
+            resized_image = self.roberts_cross(resized_image)
+        save_path = os.path.join(settings.save_path, 'art.txt') if save_path is None else save_path
+        with open(save_path, 'w') as f:
+            for height in range(0, resized_image.size[1]):
+                for width in range(0, resized_image.size[0]):
                     if self.progress_bar is not None:
                         self.progress_bar.value += 1
                         self.progress_bar.setValue(self.progress_bar.value)
-                    average = sum([x for x in self.resized_image.getpixel((width, height))[:3]]) / 3
+                    average = sum([x for x in resized_image.getpixel((width, height))[:3]]) / 3
                     f.write(self.symbols[int(average) // math.ceil(255 / (len(self.symbols)))])
                 f.write('\n')
         if self.progress_bar is not None:
@@ -46,17 +43,6 @@ class AsciiArtGenerator:
                 image.putpixel((width, height), (result, result, result))
         return image
 
-    @staticmethod
-    def load_image(path):
-        try:
-            return Image.open(path)
-        except PIL.UnidentifiedImageError as e:
-            raise e
-        except FileNotFoundError as e:
-            raise e
-        except FileExistsError as e:
-            raise e
-
 
 @click.command()
 @click.option('-ip', required=True, help='Image path')
@@ -65,13 +51,14 @@ class AsciiArtGenerator:
 @click.option('-w', default=150, help='Art width')
 @click.option('-h', default=100, help='Art height')
 def generate_art(ip, sp, m, w, h):
-    sys.tracebacklimit = 0
-    if m == 'on':
-        ascii_art_generator = AsciiArtGenerator(ip, int(w), int(h), True, None, None, sp)
-        ascii_art_generator.generate_text_art()
-    if m == 'off':
-        ascii_art_generator = AsciiArtGenerator(ip, int(w), int(h), False, None, None, sp)
-        ascii_art_generator.generate_text_art()
+    ascii_art_generator = AsciiArtGenerator()
+    try:
+        if m == 'on':
+            ascii_art_generator.generate_text_art(ip, int(w), int(h), True, sp)
+        if m == 'off':
+            ascii_art_generator.generate_text_art(ip, int(w), int(h), False, sp)
+    except Exception as e:
+        raise click.ClickException(str(e))
 
 
 if __name__ == '__main__':

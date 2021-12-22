@@ -144,9 +144,8 @@ class ApplicationWindow(QWidget):
 
     def process_image(self, width, height, roberts_filter_mode):
         self.progress_bar = ProgressBar(self, width, height)
-        self.ascii_art = AsciiArtGenerator(self.path, width, height,
-                                           roberts_filter_mode, int(self.granularity_level.value()), self.progress_bar)
-        self.ascii_art.generate_text_art()
+        self.ascii_art = AsciiArtGenerator(int(self.granularity_level.value()), self.progress_bar)
+        self.ascii_art.generate_text_art(self.path, width, height, roberts_filter_mode)
         self.ascii_picture = AsciiPictureGenerator(int(self.image.size[0] / width), self.image.size[0],
                                                    self.image.size[1])
         self.ascii_picture.generate_picture_art()
